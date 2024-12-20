@@ -9,6 +9,7 @@ function love.load()
 
     gridTiles = {}
     pathTiles = {}
+    tracePath = {}
 
     gridSize = 0
 
@@ -35,7 +36,7 @@ function love.load()
     drawnValues = {}
 
     gridTrace = {}
-    traceIndex  = 1
+    traceIndex  = 0 -- index for the trace path
     traceX = 1
     traceY = 1
     gridTrace.x = gridTiles[traceX].x
@@ -56,7 +57,11 @@ function love.draw()
 
     love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
 
-    
+    for i = 1, traceIndex, 1 do
+        love.graphics.setColor(0,0,0)
+        love.graphics.rectangle("fill",tracePath[i].x, tracePath[i].y,50 , 50)
+    end
+
 end
 
 function drawGrid()
@@ -77,6 +82,8 @@ function drawGrid()
         end
         
     end
+
+
     -- for i = 1,110,1 do
     --     love.graphics.setColor(0.8,0,1)
     --     love.graphics.rectangle("line", gridTiles[i].x, gridTiles[i].y, 50,50)
@@ -175,17 +182,6 @@ function love.keypressed(key, scancode, isRepeat)
         love.event.quit()
     end
 
-    -- if key == "z" then
-    --     traceIndex = traceIndex+1
-    --     if traceIndex > gridSize-11 then
-    --         traceIndex = 1
-    --     end
-    --     gridTrace.x = gridTiles[traceIndex].x
-    --     gridTrace.y = gridTiles[traceIndex].y
-    --     traceX = traceIndex
-    --     traceY = traceIndex
-    -- end
-
     if key == "right" then
         traceX = traceX+11
         if traceX > gridSize-11 then
@@ -222,5 +218,15 @@ function love.keypressed(key, scancode, isRepeat)
         end
         gridTrace.x = gridTiles[traceX].x
         gridTrace.y = gridTiles[traceY].y
+    end
+
+    --test path making
+    if key == "space" then
+        --add to path array
+        traceIndex = traceIndex + 1
+        traceElement = {}
+        traceElement.x = gridTrace.x
+        traceElement.y = gridTrace.y
+        tracePath[traceIndex] = traceElement
     end
 end
