@@ -21,6 +21,13 @@ function love.load()
     gridLength = 10
     gridWidth = 10
 
+    traceIndex  = 0 -- index for the trace path
+    gridTrace = {}
+
+    traceX = 1
+    traceY = 1
+
+
     generateGrid(gridLength,gridWidth)
     --generatePath()
 
@@ -38,12 +45,10 @@ function love.load()
 
     drawnValues = {}
 
-    gridTrace = {}
-    traceIndex  = 0 -- index for the trace path
-    traceX = 1
-    traceY = 1
     gridTrace.x = gridTiles[traceX].x
     gridTrace.y = gridTiles[traceY].y
+
+
 
 end
 
@@ -60,11 +65,14 @@ function love.draw()
 
     love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
 
+
+    -- draw path
     for i = 1, traceIndex, 1 do
         love.graphics.setColor(0,1,0)
         love.graphics.rectangle("fill",tracePath[i].x, tracePath[i].y,50 , 50)
     end
 
+    --draw start/end
     love.graphics.rectangle("fill", gridTiles[startPos.x].x, gridTiles[startPos.y].y, 50,50)
     love.graphics.setColor(1,0,0)
     love.graphics.rectangle("fill", gridTiles[finPos.x].x, gridTiles[finPos.y].y, 50, 50)
@@ -113,7 +121,7 @@ function drawGrid()
 end
 
 
-function generatePath()
+function generatePath(traceIndex)
     -- generate path
     -- it = 0
     -- for i=1,100,1 do
@@ -138,37 +146,53 @@ function generatePath()
     randDirY = 1
 
     while startPos.x ~= gridSize-11  do
+
+        if startPos.x == finPos.x and startPos.y == finPos.y then
+            break -- we're finished, get out of here !!!
+        end
+
         chooseX = math.random(1,5)
         chooseY = math.random(1,5)
 
-        chooseDirection(chooseX, chooseY)
+        if chooseX > 3 then
+            randDirX = 1
+        elseif chooseX < 3 then
+            randDirX = -1
+        else
+            randDirX = 0
+        end
+    
+        if chooseY > 3 then
+            randDirY = 1
+        elseif chooseY < 3 then
+            randDirY = -1
+        else
+            randDirY = 0
+        end
+
+        -- ok from here you want to use the rand direction you made to like move in a direction
+        -- and then the loop (should) repeats until the startPos == endPos
+
+        startPos.x = startPos.x + randDirX*11
+        startPos.y = startPos.y + randDirY
+
+        prev = {}
+        prev.x = startPos.x
+        prev.y = startPos.y
+
+        -- make sure we don't already have this value in the array [TODO] :(
+        traceIndex = traceIndex + 1
+        gridTrace[traceIndex] = prev 
+
+
         break
 
     end
 
-    -- determines direction
     -- TODO: use tracePath / traceIndex to draw a connected path from [start] to [end]
     
 end
 
-function chooseDirection(x,y)
-    if x > 3 then
-        randDirX = 1
-    elseif x < 3 then
-        randDirX = -1
-    else
-        randDirX = 0
-    end
-
-    if y > 3 then
-        randDirY = 1
-    elseif y < 3 then
-        randDirY = -1
-    else
-        randDirY = 0
-    end
-
-end
 
 function findValueDrawn(value)
     for i=1,100,1 do
@@ -199,7 +223,7 @@ function generateGrid(length, width)
         end
     end
 
-    generatePath()
+    generatePath(traceIndex)
     
 end
 
