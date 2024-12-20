@@ -1,5 +1,6 @@
 
 -- use alt+L to run the project from vscode
+-- alr chat, this is looking real messy 
 
 function love.load()
 
@@ -13,13 +14,15 @@ function love.load()
 
     gridSize = 0
 
+    startPos = {}
+    finPos = {}
 
 
     gridLength = 10
     gridWidth = 10
 
     generateGrid(gridLength,gridWidth)
-    generatePath()
+    --generatePath()
 
 
     randIt = 0
@@ -58,29 +61,38 @@ function love.draw()
     love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
 
     for i = 1, traceIndex, 1 do
-        love.graphics.setColor(0,0,0)
+        love.graphics.setColor(0,1,0)
         love.graphics.rectangle("fill",tracePath[i].x, tracePath[i].y,50 , 50)
     end
+
+    love.graphics.rectangle("fill", gridTiles[startPos.x].x, gridTiles[startPos.y].y, 50,50)
+    love.graphics.setColor(1,0,0)
+    love.graphics.rectangle("fill", gridTiles[finPos.x].x, gridTiles[finPos.y].y, 50, 50)
 
 end
 
 function drawGrid()
     --love.graphics.setColor(0,0,1)
-    it = 0
-    for i=0,50,1 do
-        it = it +1
-        if pathTiles[it] ~= nil then
-            love.graphics.setColor(0,0,1)
-            love.graphics.rectangle("fill", gridTiles[pathTiles[it]].x, gridTiles[pathTiles[it]].y, 50,50)
-            drawnValues[it] = pathTiles[it]
-        end
-    end
-    for i = 1, 110, 1 do
-        if findValueDrawn(i) == false then
-            love.graphics.setColor(.8,0,1)
-            love.graphics.rectangle("fill", gridTiles[i].x, gridTiles[i].y, 50,50)
-        end
+    -- it = 0
+    -- for i=0,50,1 do
+    --     it = it +1
+    --     if pathTiles[it] ~= nil then
+    --         love.graphics.setColor(0,0,1)
+    --         love.graphics.rectangle("fill", gridTiles[pathTiles[it]].x, gridTiles[pathTiles[it]].y, 50,50)
+    --         drawnValues[it] = pathTiles[it]
+    --     end
+    -- end
+    -- for i = 1, 110, 1 do
+    --     if findValueDrawn(i) == false then
+    --         love.graphics.setColor(.8,0,1)
+    --         love.graphics.rectangle("fill", gridTiles[i].x, gridTiles[i].y, 50,50)
+    --     end
         
+    -- end
+
+    for it=1,gridSize,1 do
+        love.graphics.setColor(.8,0,1)
+        love.graphics.rectangle("line", gridTiles[it].x, gridTiles[it].y, 50,50)
     end
 
 
@@ -103,20 +115,59 @@ end
 
 function generatePath()
     -- generate path
-    it = 0
-    for i=1,100,1 do
-        it = it+1
-        randIt = math.random(100)
-        for j=1,i,1 do
-            if pathTiles[j] ~= randIt then
-                pathTiles[it] = randIt
-                break
-            end
-        end
+    -- it = 0
+    -- for i=1,100,1 do
+    --     it = it+1
+    --     randIt = math.random(100)
+    --     for j=1,i,1 do
+    --         if pathTiles[j] ~= randIt then
+    --             pathTiles[it] = randIt
+    --             break
+    --         end
+    --     end
+    -- end
+
+    -- define start and end positions
+    startPos.x = 1
+    startPos.y = 10
+
+    finPos.x = 110
+    finPos.y = 1
+
+    randDirX = 1
+    randDirY = 1
+
+    while startPos.x ~= gridSize-11  do
+        chooseX = math.random(1,5)
+        chooseY = math.random(1,5)
+
+        chooseDirection(chooseX, chooseY)
+        break
+
     end
 
     -- determines direction
+    -- TODO: use tracePath / traceIndex to draw a connected path from [start] to [end]
     
+end
+
+function chooseDirection(x,y)
+    if x > 3 then
+        randDirX = 1
+    elseif x < 3 then
+        randDirX = -1
+    else
+        randDirX = 0
+    end
+
+    if y > 3 then
+        randDirY = 1
+    elseif y < 3 then
+        randDirY = -1
+    else
+        randDirY = 0
+    end
+
 end
 
 function findValueDrawn(value)
@@ -227,6 +278,7 @@ function love.keypressed(key, scancode, isRepeat)
         traceElement = {}
         traceElement.x = gridTrace.x
         traceElement.y = gridTrace.y
-        tracePath[traceIndex] = traceElement
+        tracePath[traceIndex] = traceElement -- basically use this same concept to generate an actual path in 
+                                             -- the map
     end
 end
