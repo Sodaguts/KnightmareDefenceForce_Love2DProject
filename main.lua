@@ -60,10 +60,10 @@ function love.draw()
 
     drawGrid()
 
-    love.graphics.setColor(1,1,1)
+    
     --love.graphics.circle("fill", player.x, player.y, 50)
 
-    love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
+    
 
 
     -- draw path
@@ -78,46 +78,19 @@ function love.draw()
     love.graphics.setColor(1,0,0)
     love.graphics.rectangle("fill", gridTiles[finPos.x].x, gridTiles[finPos.y].y, 50, 50)
 
+    --grid trace
+    love.graphics.setColor(1,1,1)
+    love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
+
 end
 
 function drawGrid()
-    --love.graphics.setColor(0,0,1)
-    -- it = 0
-    -- for i=0,50,1 do
-    --     it = it +1
-    --     if pathTiles[it] ~= nil then
-    --         love.graphics.setColor(0,0,1)
-    --         love.graphics.rectangle("fill", gridTiles[pathTiles[it]].x, gridTiles[pathTiles[it]].y, 50,50)
-    --         drawnValues[it] = pathTiles[it]
-    --     end
-    -- end
-    -- for i = 1, 110, 1 do
-    --     if findValueDrawn(i) == false then
-    --         love.graphics.setColor(.8,0,1)
-    --         love.graphics.rectangle("fill", gridTiles[i].x, gridTiles[i].y, 50,50)
-    --     end
-        
-    -- end
+
 
     for it=1,gridSize,1 do
         love.graphics.setColor(.8,0,1)
         love.graphics.rectangle("line", gridTiles[it].x, gridTiles[it].y, 50,50)
     end
-
-
-    -- for i = 1,110,1 do
-    --     love.graphics.setColor(0.8,0,1)
-    --     love.graphics.rectangle("line", gridTiles[i].x, gridTiles[i].y, 50,50)
-    -- end
-
-    -- -- draw path based on elements in finalPath
-
-    -- for j = 1,gridSize,1 do
-    --     love.graphics.setColor(0,0,1)
-    --     love.graphics.rectangle("fill", gridTiles[j].x, gridTiles[j].y, 50,50)
-    -- end
-
-    
     
 end
 
@@ -196,6 +169,7 @@ function generatePath()
             wander.y = 1
         end
 
+        --TODO: check to see if elem already in array
         traceIndex = traceIndex + 1
         elem = {}
         elem.x = gridTiles[wander.x].x
@@ -208,14 +182,6 @@ function generatePath()
         -- the startPos to spawn enemies later
         --break -- temp break to prevent my computer from crashing :')
     end
-
-    -- traceIndex = traceIndex + 1
-    -- newElemY = math.random(1,5)
-    -- newElemX = math.random(1,5) +11
-    -- test = {}
-    -- test.x = gridTiles[newElemX].x
-    -- test.y = gridTiles[newElemY].y
-    -- tracePath[traceIndex] = test
     
 end
 
@@ -287,7 +253,7 @@ function love.keypressed(key, scancode, isRepeat)
 
     if key == "right" then
         traceX = traceX+11
-        if traceX > gridSize-11 then
+        if traceX > gridSize then
             --traceIndex = 1
             traceX = 1
         end
@@ -299,7 +265,7 @@ function love.keypressed(key, scancode, isRepeat)
         traceX = traceX-11
         if traceX < 1 then
             --traceIndex = 1
-            traceX = gridSize-11
+            traceX = gridSize
         end
         gridTrace.x = gridTiles[traceX].x
         gridTrace.y = gridTiles[traceY].y
@@ -338,3 +304,6 @@ function love.keypressed(key, scancode, isRepeat)
         generatePath()
     end
 end
+
+-- for the ai moving along the path we can probably just loop through the path array and move each enemy after
+-- a set period of time until they reach the end and then destroy that enemy (idk how to do that yet)
