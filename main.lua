@@ -29,7 +29,7 @@ function love.load()
 
 
     generateGrid(gridLength,gridWidth)
-    --generatePath()
+    generatePath()
 
 
     randIt = 0
@@ -73,6 +73,7 @@ function love.draw()
     end
 
     --draw start/end
+    love.graphics.setColor(0,0,1)
     love.graphics.rectangle("fill", gridTiles[startPos.x].x, gridTiles[startPos.y].y, 50,50)
     love.graphics.setColor(1,0,0)
     love.graphics.rectangle("fill", gridTiles[finPos.x].x, gridTiles[finPos.y].y, 50, 50)
@@ -121,21 +122,8 @@ function drawGrid()
 end
 
 
-function generatePath(traceIndex)
-    -- generate path
-    -- it = 0
-    -- for i=1,100,1 do
-    --     it = it+1
-    --     randIt = math.random(100)
-    --     for j=1,i,1 do
-    --         if pathTiles[j] ~= randIt then
-    --             pathTiles[it] = randIt
-    --             break
-    --         end
-    --     end
-    -- end
+function generatePath()
 
-    -- define start and end positions
     startPos.x = 1
     startPos.y = 10
 
@@ -145,51 +133,13 @@ function generatePath(traceIndex)
     randDirX = 1
     randDirY = 1
 
-    while startPos.x ~= gridSize-11  do
-
-        if startPos.x == finPos.x and startPos.y == finPos.y then
-            break -- we're finished, get out of here !!!
-        end
-
-        chooseX = math.random(1,5)
-        chooseY = math.random(1,5)
-
-        if chooseX > 3 then
-            randDirX = 1
-        elseif chooseX < 3 then
-            randDirX = -1
-        else
-            randDirX = 0
-        end
-    
-        if chooseY > 3 then
-            randDirY = 1
-        elseif chooseY < 3 then
-            randDirY = -1
-        else
-            randDirY = 0
-        end
-
-        -- ok from here you want to use the rand direction you made to like move in a direction
-        -- and then the loop (should) repeats until the startPos == endPos
-
-        startPos.x = startPos.x + randDirX*11
-        startPos.y = startPos.y + randDirY
-
-        prev = {}
-        prev.x = startPos.x
-        prev.y = startPos.y
-
-        -- make sure we don't already have this value in the array [TODO] :(
-        traceIndex = traceIndex + 1
-        gridTrace[traceIndex] = prev 
-
-
-        break
-
-    end
-
-    -- TODO: use tracePath / traceIndex to draw a connected path from [start] to [end]
+    traceIndex = traceIndex + 1
+    newElemY = math.random(1,5)
+    newElemX = math.random(1,5) +11
+    test = {}
+    test.x = gridTiles[newElemX].x
+    test.y = gridTiles[newElemY].y
+    tracePath[traceIndex] = test
     
 end
 
@@ -223,7 +173,7 @@ function generateGrid(length, width)
         end
     end
 
-    generatePath(traceIndex)
+    --generatePath(traceIndex)
     
 end
 
