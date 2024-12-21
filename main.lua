@@ -124,6 +124,8 @@ end
 
 function generatePath()
 
+    traceIndex = 0
+
     startPos.x = 1
     startPos.y = 10
 
@@ -133,40 +135,87 @@ function generatePath()
     randDirX = 1
     randDirY = 1
 
+    wander = {}
+    wander.x = startPos.x
+    wander.y = startPos.y
     -- ok time for some actual path gen (locked in)
 
-    while startPos.x ~= finPos.x and startPos.y ~= finPos.y do
-        --choose a random direction to go to
-        randX = math.random(1,5)
-        if randX > 3 then
+    while wander.x ~= finPos.x or wander.y ~= finPos.y do
+        --choose a random direction to go in
+        if traceIndex == 0 then
             randDirX = 11
-        elseif randX < 3 then
-            randDirX = -11
+            randDirY = 0
         else
-            randDirX = 0
+            randXY = math.random(1,5)
+            if randXY > 3 then
+                randX = math.random(1,5)
+                if randX > 3 then
+                    randDirX = 11
+                    randDirY = 0
+                elseif randX < 3 then
+                    randDirX = -11
+                    randDirY = 0
+                else
+                    randDirX = 0
+                    randDirY = 0
+                end
+            elseif randXY < 3 then
+                randY = math.random(1,5)
+                if randY > 3 then
+                    randDirY = 1
+                    randDirX = 0
+                elseif randY < 3 then
+                    randDirY = -1
+                    randDirX = 0
+                else 
+                    randDirY = 0
+                    randDirX = 0
+                end
+            else
+                randDirX = 0
+                randDirY = 0
+            end
         end
 
-        randY = math.random(1,5)
-        if randY > 3 then
-            randDirY = 1
-        elseif randY < 3 then
-            randDirY = -1
-        else 
-            randDirY = 0
+        
+
+        --move in that direction
+        wander.x = wander.x + randDirX
+        wander.y = wander.y + randDirY
+
+        --check to see if in bounds (move back if not)
+        if wander.x > gridSize-11 then
+            wander.x = gridSize-11
+        elseif wander.x < 1 then
+            wander.x = 1
         end
+
+        if wander.y > 11 then
+            wander.y = 11
+        elseif wander.y < 1 then
+            wander.y = 1
+        end
+
+        traceIndex = traceIndex + 1
+        elem = {}
+        elem.x = gridTiles[wander.x].x
+        elem.y = gridTiles[wander.y].y
+        tracePath[traceIndex] = elem
+
+
 
         -- increment startPos and add to the path [may want to use a copy of startPos since we'll need]
         -- the startPos to spawn enemies later
-        break -- temp break to prevent my computer from crashing :')
+        --break -- temp break to prevent my computer from crashing :')
     end
 
-    traceIndex = traceIndex + 1
-    newElemY = math.random(1,5)
-    newElemX = math.random(1,5) +11
-    test = {}
-    test.x = gridTiles[newElemX].x
-    test.y = gridTiles[newElemY].y
-    tracePath[traceIndex] = test
+    -- traceIndex = traceIndex + 1
+    -- newElemY = math.random(1,5)
+    -- newElemX = math.random(1,5) +11
+    -- test = {}
+    -- test.x = gridTiles[newElemX].x
+    -- test.y = gridTiles[newElemY].y
+    -- tracePath[traceIndex] = test
     
 end
 
@@ -222,7 +271,9 @@ function getInput()
     end
 
     if love.keyboard.isDown("r") then
-        generateGrid(gridLength,gridWidth)
+        --generateGrid(gridLength,gridWidth)
+        --TODO
+        --generatePath()
     end
 
     
@@ -281,5 +332,9 @@ function love.keypressed(key, scancode, isRepeat)
         traceElement.y = gridTrace.y
         tracePath[traceIndex] = traceElement -- basically use this same concept to generate an actual path in 
                                              -- the map
+    end
+
+    if key == "r" then
+        generatePath()
     end
 end
