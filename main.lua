@@ -133,6 +133,33 @@ function generatePath()
     randDirX = 1
     randDirY = 1
 
+    -- ok time for some actual path gen (locked in)
+
+    while startPos.x ~= finPos.x and startPos.y ~= finPos.y do
+        --choose a random direction to go to
+        randX = math.random(1,5)
+        if randX > 3 then
+            randDirX = 11
+        elseif randX < 3 then
+            randDirX = -11
+        else
+            randDirX = 0
+        end
+
+        randY = math.random(1,5)
+        if randY > 3 then
+            randDirY = 1
+        elseif randY < 3 then
+            randDirY = -1
+        else 
+            randDirY = 0
+        end
+
+        -- increment startPos and add to the path [may want to use a copy of startPos since we'll need]
+        -- the startPos to spawn enemies later
+        break -- temp break to prevent my computer from crashing :')
+    end
+
     traceIndex = traceIndex + 1
     newElemY = math.random(1,5)
     newElemX = math.random(1,5) +11
