@@ -97,9 +97,13 @@ end
 
 function generatePath()
 
+    for k in ipairs(tracePath) do
+        tracePath[k] = nil
+    end
     -- may want to use the vector to the end position to help determine direction instead of being totally random
     traceIndex = 0
-    pathMax = 900
+    --pathMax = 1000
+    pathPoint = 0
 
     startPos.x = 1
     startPos.y = 10
@@ -111,19 +115,18 @@ function generatePath()
     randDirY = 1
 
     wander = {}
-    wander.x = startPos.x
-    wander.y = startPos.y
+    wander.x = startPos.x+11
+    wander.y = startPos.y+1
     -- ok time for some actual path gen (locked in)
 
-    while wander.x ~= finPos.x or wander.y ~= finPos.y do
+    while wander.x ~= finPos.x or wander.y ~= finPos.y+1 do
         --choose a random direction to go in
-
-        if pathMax <= 0 then
-            break
-        end
+        -- if pathMax <= 0 then
+        --     break
+        -- end
 
         if traceIndex == 0 then
-            randDirX = 11
+            randDirX = 1
             randDirY = 0
         else
             randXY = math.random(1,5)
@@ -160,43 +163,39 @@ function generatePath()
         
 
         --move in that direction
-        wander.x = wander.x + randDirX
-        wander.y = wander.y + randDirY
+        if randDirX ~= 0 or randDirY ~= 0 then
+            wander.x = wander.x + randDirX
+            wander.y = wander.y + randDirY
 
-        --check to see if in bounds (move back if not)
-        if wander.x > gridSize then
-            wander.x = gridSize
-        elseif wander.x < 1 then
-            wander.x = 1
-        end
+            --check to see if in bounds (move back if not)
+            if wander.x > gridSize-11 then
+                wander.x = gridSize-11
+            elseif wander.x < 22 then
+                wander.x = 22
+            end
 
-        if wander.y > 11 then
-            wander.y = 11
-        elseif wander.y < 1 then
-            wander.y = 1
-        end
+            if wander.y > 10 then
+                wander.y = 10
+            elseif wander.y < 2 then
+                wander.y = 2
+            end
 
-        --TODO: check to see if elem already in array
-        elem = {}
-        elem.x = gridTiles[wander.x].x
-        elem.y = gridTiles[wander.y].y
-        if traceIndex == 0 then
-            traceIndex = traceIndex + 1
-            tracePath[traceIndex] = elem
-            pathMax = pathMax - 1
-        else
-            if table.contains(tracePath,elem) ~= true then
+            --TODO: check to see if elem already in array
+            elem = {}
+            elem.x = gridTiles[wander.x].x
+            elem.y = gridTiles[wander.y].y
+            if traceIndex == 0 then
                 traceIndex = traceIndex + 1
                 tracePath[traceIndex] = elem
-                pathMax = pathMax - 1
+                --pathMax = pathMax - 1
+            else
+                if table.contains(tracePath,elem) ~= true then
+                    traceIndex = traceIndex + 1
+                    tracePath[traceIndex] = elem
+                    --pathMax = pathMax - 1
+                end
             end
         end
-
-       
-
-        -- increment startPos and add to the path [may want to use a copy of startPos since we'll need]
-        -- the startPos to spawn enemies later
-        --break -- temp break to prevent my computer from crashing :')
     end
     
 end
@@ -322,12 +321,20 @@ function love.keypressed(key, scancode, isRepeat)
     --test path making
     if key == "space" then
         --add to path array
-        traceIndex = traceIndex + 1
-        traceElement = {}
-        traceElement.x = gridTrace.x
-        traceElement.y = gridTrace.y
-        tracePath[traceIndex] = traceElement -- basically use this same concept to generate an actual path in 
+        -- traceIndex = traceIndex + 1
+        -- traceElement = {}
+        -- traceElement.x = gridTrace.x
+        -- traceElement.y = gridTrace.y
+        --tracePath[traceIndex] = traceElement -- basically use this same concept to generate an actual path in 
                                              -- the map
+        pathPoint = pathPoint + 1
+        if tracePath[pathPoint] == nil then
+            pathPoint = 1
+        end
+
+        gridTrace.x = tracePath[pathPoint].x
+        gridTrace.y = tracePath[pathPoint].y
+
     end
 
     if key == "r" then
