@@ -97,7 +97,9 @@ end
 
 function generatePath()
 
+    -- may want to use the vector to the end position to help determine direction instead of being totally random
     traceIndex = 0
+    pathMax = 900
 
     startPos.x = 1
     startPos.y = 10
@@ -115,6 +117,11 @@ function generatePath()
 
     while wander.x ~= finPos.x or wander.y ~= finPos.y do
         --choose a random direction to go in
+
+        if pathMax <= 0 then
+            break
+        end
+
         if traceIndex == 0 then
             randDirX = 11
             randDirY = 0
@@ -157,8 +164,8 @@ function generatePath()
         wander.y = wander.y + randDirY
 
         --check to see if in bounds (move back if not)
-        if wander.x > gridSize-11 then
-            wander.x = gridSize-11
+        if wander.x > gridSize then
+            wander.x = gridSize
         elseif wander.x < 1 then
             wander.x = 1
         end
@@ -170,13 +177,22 @@ function generatePath()
         end
 
         --TODO: check to see if elem already in array
-        traceIndex = traceIndex + 1
         elem = {}
         elem.x = gridTiles[wander.x].x
         elem.y = gridTiles[wander.y].y
-        tracePath[traceIndex] = elem
+        if traceIndex == 0 then
+            traceIndex = traceIndex + 1
+            tracePath[traceIndex] = elem
+            pathMax = pathMax - 1
+        else
+            if table.contains(tracePath,elem) ~= true then
+                traceIndex = traceIndex + 1
+                tracePath[traceIndex] = elem
+                pathMax = pathMax - 1
+            end
+        end
 
-
+       
 
         -- increment startPos and add to the path [may want to use a copy of startPos since we'll need]
         -- the startPos to spawn enemies later
@@ -185,9 +201,23 @@ function generatePath()
     
 end
 
+function table.contains(table,element)
+    for i,value in pairs(table) do
+        if value == element then
+            return true
+        else
+            return false
+        end
+    end
+end
+
 
 function findValueDrawn(value)
-    for i=1,100,1 do
+    for i=1,110,1 do
+        if drawnValues[i] == nil then
+            return false
+        end
+
         if drawnValues[i] == value then
             return true
         end
