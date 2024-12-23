@@ -60,7 +60,12 @@ function love.draw()
     love.graphics.rectangle("fill", gridTiles[finPos.x].x, gridTiles[finPos.y].y, 50, 50)
 
     --grid trace
-    love.graphics.setColor(1,1,1)
+    if findElemByCoordinate(gridTrace.x,gridTrace.y) == true then
+        love.graphics.setColor(1,1,1)
+    else
+        love.graphics.setColor(0.5,0.5,0.5)
+    end
+    --love.graphics.setColor(1,1,1)
     love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
 
 end

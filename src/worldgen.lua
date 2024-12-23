@@ -194,3 +194,20 @@ function generateGrid(length, width)
     --generatePath(traceIndex)
     
 end
+
+-- use this to pass the in an X and Y position
+-- will return true or false based on whether or not that position is in the path
+function findElemByCoordinate(x,y)
+    elem = {}
+    elem.x = x
+    elem.y = y
+    for i=1,#tracePath do
+        current = {}
+        current.x = tracePath[i].x
+        current.y = tracePath[i].y
+        if current.x == elem.x and current.y == elem.y then
+            return true
+        end
+    end
+    return false
+end
