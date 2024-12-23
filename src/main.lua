@@ -6,6 +6,8 @@ require("worldgen")
 function love.load()
 
     tree_img = love.graphics.newImage("images/sprites/tree_a.png")
+    path_img = love.graphics.newImage("images/sprites/path_tile.png")
+    cursor_img = love.graphics.newImage("images/sprites/cursor.png")
 
     player = {}
     player.x = 100
@@ -51,8 +53,8 @@ function love.draw()
     
     -- draw path
     for i = 1, traceIndex, 1 do
-        love.graphics.setColor(0,1,0)
-        love.graphics.rectangle("fill",tracePath[i].x, tracePath[i].y,50 , 50)
+        love.graphics.setColor(1,1,1)
+        love.graphics.draw(path_img,tracePath[i].x, tracePath[i].y)
     end
 
     --draw start/end
@@ -63,12 +65,12 @@ function love.draw()
 
     --grid trace
     if findElemByCoordinate(gridTrace.x,gridTrace.y) == true then
-        love.graphics.setColor(1,1,1)
-    else
         love.graphics.setColor(0.5,0.5,0.5)
+    else
+        love.graphics.setColor(1,1,1)
     end
     --love.graphics.setColor(1,1,1)
-    love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
+    love.graphics.draw(cursor_img, gridTrace.x, gridTrace.y)
 
 end
 
@@ -116,7 +118,7 @@ function love.keypressed(key, scancode, isRepeat)
         love.event.quit()
     end
 
-    if key == "right" then
+    if key == "right" or key == "d" then
         traceX = traceX+11
         if traceX > gridSize then
             --traceIndex = 1
@@ -126,7 +128,7 @@ function love.keypressed(key, scancode, isRepeat)
         gridTrace.y = gridTiles[traceY].y
     end
 
-    if key == "left" then
+    if key == "left" or key == "a" then
         traceX = traceX-11
         if traceX < 1 then
             --traceIndex = 1
@@ -136,7 +138,7 @@ function love.keypressed(key, scancode, isRepeat)
         gridTrace.y = gridTiles[traceY].y
     end
 
-    if key == "up" then
+    if key == "up" or key == "w" then
         traceY = traceY-1
         if traceY < 1 then
             traceY = 11
@@ -145,7 +147,7 @@ function love.keypressed(key, scancode, isRepeat)
         gridTrace.y = gridTiles[traceY].y
     end
 
-    if key == "down" then
+    if key == "down" or key == "s" then
         traceY = traceY+1
         if traceY > 11 then
             traceY = 1

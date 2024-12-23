@@ -5,7 +5,7 @@
 
 function load()
     gridTiles = {}
-    pathTiles = {}
+    pathTiles = {} -- deprecated I think
     tracePath = {}
 
     gridSize = 0
