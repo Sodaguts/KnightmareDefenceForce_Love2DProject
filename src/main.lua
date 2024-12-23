@@ -47,8 +47,6 @@ function love.draw()
     --love.graphics.circle("fill", player.x, player.y, 50)
 
     
-
-
     -- draw path
     for i = 1, traceIndex, 1 do
         love.graphics.setColor(0,1,0)
