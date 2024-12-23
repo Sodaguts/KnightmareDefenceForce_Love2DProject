@@ -31,15 +31,7 @@ end
 
 
 
-function drawGrid()
 
-
-    for it=1,gridSize,1 do
-        love.graphics.setColor(.8,0,1)
-        love.graphics.rectangle("line", gridTiles[it].x, gridTiles[it].y, 50,50)
-    end
-    
-end
 
 
 function generatePath()

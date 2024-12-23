@@ -5,6 +5,8 @@ require("worldgen")
 
 function love.load()
 
+    tree_img = love.graphics.newImage("images/sprites/tree_a.png")
+
     player = {}
     player.x = 100
     player.y = 100
@@ -68,6 +70,16 @@ function love.draw()
     --love.graphics.setColor(1,1,1)
     love.graphics.rectangle("fill", gridTrace.x, gridTrace.y, 50,50)
 
+end
+
+function drawGrid()
+
+
+    for it=1,gridSize,1 do
+        love.graphics.setColor(1,1,1)
+        love.graphics.draw(tree_img, gridTiles[it].x, gridTiles[it].y)
+    end
+    
 end
 
 
